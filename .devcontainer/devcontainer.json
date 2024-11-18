@@ -10,10 +10,7 @@
     "storage": "32gb"
   },
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/devcontainers/features/swap:1": {
-      "size": "2G"
-    }
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
   "postCreateCommand": "pip install -e .[dev] --no-cache-dir --no-deps --use-feature=fast-deps",
   "remoteUser": "root"
