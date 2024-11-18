@@ -46,4 +46,4 @@ services:
       kafka:
         condition: service_healthy
     volumes:
-      - ../:/app
+      - ..:/app
