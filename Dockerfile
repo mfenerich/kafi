@@ -1,4 +1,4 @@
-FROM python:3.10-slim as base
+FROM python:3.10-slim AS base
 
 # Install netcat-openbsd for wait-for-it.sh
 RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/lists/*
