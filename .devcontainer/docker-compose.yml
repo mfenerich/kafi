@@ -34,16 +34,3 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  app:
-    build:
-      context: ..
-      dockerfile: Dockerfile
-    container_name: app
-    environment:
-      - KAFKA_BROKER=kafka:9092
-    depends_on:
-      kafka:
-        condition: service_healthy
-    volumes:
-      - /workspaces/kafi:/app
