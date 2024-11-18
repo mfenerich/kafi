@@ -47,3 +47,7 @@ services:
         condition: service_healthy
     volumes:
       - /workspaces/kafi:/app
+    deploy:
+    resources:
+      limits:
+        memory: 1g
