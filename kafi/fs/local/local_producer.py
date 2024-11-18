@@ -9,4 +9,3 @@ class LocalProducer(FSProducer):
 
     def close(self):
         return self.topic_str
-

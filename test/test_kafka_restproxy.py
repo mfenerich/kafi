@@ -7,14 +7,15 @@ else:
     sys.path.insert(1, ".")
 
 from test.test_single_storage_base import TestSingleStorageBase
-from kafi.kafka.restproxy.restproxy import RestProxy
+
 from kafi.kafka.cluster.cluster import Cluster
+from kafi.kafka.restproxy.restproxy import RestProxy
+
 
 class Test(TestSingleStorageBase):
     def setUp(self):
         super().setUp()
         self.principal_str = None
-
 
     def tearDown(self):
         super().tearDown()
@@ -35,7 +36,7 @@ class Test(TestSingleStorageBase):
         r = self.get_storage()
         #
         return "confluent.cloud" in r.rest_proxy_config_dict["rest.proxy.url"]
-    
+
     def test_delete_groups(self):
         pass
 

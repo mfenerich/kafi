@@ -5,10 +5,11 @@ from kafi.fs.s3.s3_producer import S3Producer
 
 #
 
+
 class S3(FS):
     def __init__(self, config_str):
         super().__init__("s3s", config_str, ["s3"], ["schema_registry"])
-    
+
     #
 
     def get_admin(self):

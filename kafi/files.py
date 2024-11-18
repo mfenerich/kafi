@@ -9,18 +9,29 @@ ALL_MESSAGES = -1
 
 #
 
-#x = [{"name": "cookie", "calories": 500.0, "colour": "brown"}, {"name": "cake", "calories": 260.0, "colour": "white"}, {"name": "timtam", "calories": 80.0, "colour": "chocolate"}]
+# x = [{"name": "cookie", "calories": 500.0, "colour": "brown"}, {"name": "cake", "calories": 260.0, "colour": "white"}, {"name": "timtam", "calories": 80.0, "colour": "chocolate"}]
+
 
 class Files(Pandas):
     def topic_to_file(self, topic, fs_obj, file, n=ALL_MESSAGES, **kwargs):
-        if not fs_obj.__class__.__bases__[0].__name__== "FS":
+        if not fs_obj.__class__.__bases__[0].__name__ == "FS":
             raise Exception("The target must be a file system.")
         #
         file_str = file
         #
         suffix_str = pathlib.Path(file_str).suffix
-        if suffix_str not in [".csv", ".feather", ".json", ".orc", ".parquet", ".xlsx", ".xml"]:
-            raise Exception("Only \".csv\", \".feather\", \".json\", \".orc\", \".parquet\", \".xlsx\" and \".xml\" supported.")
+        if suffix_str not in [
+            ".csv",
+            ".feather",
+            ".json",
+            ".orc",
+            ".parquet",
+            ".xlsx",
+            ".xml",
+        ]:
+            raise Exception(
+                'Only ".csv", ".feather", ".json", ".orc", ".parquet", ".xlsx" and ".xml" supported.'
+            )
         #
         df = self.to_df(topic, n, **kwargs)
         data_bytesIO = io.BytesIO()
@@ -52,17 +63,30 @@ class Files(Pandas):
         #
         return len(df)
 
-    def file_to_topic(self, file, storage_obj, topic, n=ALL_MESSAGES, **kwargs):
-        if not self.__class__.__bases__[0].__name__== "FS":
+    def file_to_topic(
+        self, file, storage_obj, topic, n=ALL_MESSAGES, **kwargs
+    ):
+        if not self.__class__.__bases__[0].__name__ == "FS":
             raise Exception("The source must be a file system.")
         #
         import pandas as pd
+
         #
         file_str = file
         #
         suffix_str = pathlib.Path(file_str).suffix
-        if suffix_str not in [".csv", ".feather", ".json", ".orc", ".parquet", ".xlsx", ".xml"]:
-            raise Exception("Only \".csv\", \".feather\", \".json\", \".orc\", \".parquet\", \".xlsx\" and \".xml\" supported.")
+        if suffix_str not in [
+            ".csv",
+            ".feather",
+            ".json",
+            ".orc",
+            ".parquet",
+            ".xlsx",
+            ".xml",
+        ]:
+            raise Exception(
+                'Only ".csv", ".feather", ".json", ".orc", ".parquet", ".xlsx" and ".xml" supported.'
+            )
         #
         file_abs_path_str = self.admin.get_file_abs_path_str(file_str)
         data_bytes = self.admin.read_bytes(file_abs_path_str)

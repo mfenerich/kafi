@@ -9,6 +9,7 @@ ALL_MESSAGES = -1
 
 #
 
+
 class Pandas(Functional):
     def to_df(self, topic, n=ALL_MESSAGES, **kwargs):
         #
@@ -21,9 +22,12 @@ class Pandas(Functional):
             acc = pd.concat([acc, df], ignore_index=True)
             #
             return acc
+
         #
 
-        (df,  _) = self.foldl(topic, foldl_function, pd.DataFrame(), n, **kwargs)
+        (df, _) = self.foldl(
+            topic, foldl_function, pd.DataFrame(), n, **kwargs
+        )
         #
         return df
 

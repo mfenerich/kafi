@@ -13,7 +13,7 @@
         {
             "name": "source",
             "type": {
-                "type": "record", 
+                "type": "record",
                 "name": "sourceRecord",
                 "fields": [
                     {
@@ -34,7 +34,7 @@
         {
             "name": "sentiment",
             "type": {
-                "type": "record", 
+                "type": "record",
                 "name": "sentimentRecord",
                 "fields": [
                     {

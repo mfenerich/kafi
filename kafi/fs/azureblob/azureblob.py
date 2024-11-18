@@ -1,14 +1,17 @@
-from kafi.fs.fs import FS
 from kafi.fs.azureblob.azureblob_admin import AzureBlobAdmin
 from kafi.fs.azureblob.azureblob_consumer import AzureBlobConsumer
 from kafi.fs.azureblob.azureblob_producer import AzureBlobProducer
+from kafi.fs.fs import FS
 
 #
 
+
 class AzureBlob(FS):
     def __init__(self, config_str):
-        super().__init__("azureblobs", config_str, ["azure_blob"], ["schema_registry"])
-    
+        super().__init__(
+            "azureblobs", config_str, ["azure_blob"], ["schema_registry"]
+        )
+
     #
 
     def get_admin(self):

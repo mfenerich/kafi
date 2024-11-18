@@ -5,10 +5,11 @@ from kafi.fs.local.local_producer import LocalProducer
 
 #
 
+
 class Local(FS):
     def __init__(self, config_str):
         super().__init__("locals", config_str, ["local"], ["schema_registry"])
-    
+
     #
 
     def get_admin(self):
@@ -29,4 +30,3 @@ class Local(FS):
         producer = LocalProducer(self, file, **kwargs)
         #
         return producer
-    

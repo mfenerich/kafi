@@ -6,6 +6,7 @@ ALL_MESSAGES = -1
 
 #
 
+
 class KafkaConsumer(StorageConsumer):
     def __init__(self, kafka_obj, *topics, **kwargs):
         super().__init__(kafka_obj, *topics, **kwargs)
@@ -18,18 +19,28 @@ class KafkaConsumer(StorageConsumer):
         if n_int == 0:
             return initial_acc
         #
-        consume_batch_size_int = kwargs["consume_batch_size"] if "consume_batch_size" in kwargs else self.storage_obj.consume_batch_size()
+        consume_batch_size_int = (
+            kwargs["consume_batch_size"]
+            if "consume_batch_size" in kwargs
+            else self.storage_obj.consume_batch_size()
+        )
         if n != ALL_MESSAGES and consume_batch_size_int > n_int:
             consume_batch_size_int = n_int
         #
-        break_function = kwargs["break_function"] if "break_function" in kwargs else lambda _, _1: False
+        break_function = (
+            kwargs["break_function"]
+            if "break_function" in kwargs
+            else lambda _, _1: False
+        )
         #
         message_counter_int = 0
         #
         acc = initial_acc
         break_bool = False
         while True:
-            message_dict_list = self.consume_impl(n=consume_batch_size_int, **kwargs)
+            message_dict_list = self.consume_impl(
+                n=consume_batch_size_int, **kwargs
+            )
             if not message_dict_list:
                 break
             #
@@ -38,9 +49,13 @@ class KafkaConsumer(StorageConsumer):
                 if message_dict["topic"] not in topic_str_offsets_dict_dict:
                     topic_str_offsets_dict_dict[message_dict["topic"]] = {}
                 #
-                offsets_dict = topic_str_offsets_dict_dict[message_dict["topic"]]
+                offsets_dict = topic_str_offsets_dict_dict[
+                    message_dict["topic"]
+                ]
                 #
-                offsets_dict[message_dict["partition"]] = message_dict["offset"] + 1
+                offsets_dict[message_dict["partition"]] = (
+                    message_dict["offset"] + 1
+                )
                 #
                 if break_function(acc, message_dict):
                     break_bool = True
@@ -53,7 +68,10 @@ class KafkaConsumer(StorageConsumer):
                     break_bool = True
                     break
             #
-            if not self.enable_auto_commit_bool and self.storage_obj.commit_after_processing():
+            if (
+                not self.enable_auto_commit_bool
+                and self.storage_obj.commit_after_processing()
+            ):
                 self.commit(topic_str_offsets_dict_dict)
             #
             if break_bool:
@@ -68,5 +86,6 @@ class KafkaConsumer(StorageConsumer):
             message_dict_list.append(message_dict)
             #
             return message_dict_list
+
         #
         return self.foldl(foldl_function, [], n)

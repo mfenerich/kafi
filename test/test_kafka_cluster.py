@@ -7,9 +7,11 @@ else:
     sys.path.insert(1, ".")
 
 from test.test_single_storage_base import TestSingleStorageBase
+
 from kafi.kafka.cluster.cluster import Cluster
 
 #
+
 
 class Test(TestSingleStorageBase):
     def setUp(self):
@@ -17,15 +19,14 @@ class Test(TestSingleStorageBase):
         self.principal_str = None
         # self.principal_str = "User:admin"
 
-
     def tearDown(self):
         super().tearDown()
 
-#
+    #
 
     def get_storage(self):
         c = Cluster("local")
-#        c = Cluster("ccloud")
+        #        c = Cluster("ccloud")
         #
         return c
 

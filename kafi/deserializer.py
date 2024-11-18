@@ -1,6 +1,6 @@
-import os
 import importlib
 import json
+import os
 import sys
 import tempfile
 
@@ -8,6 +8,7 @@ from confluent_kafka.schema_registry.avro import AvroDeserializer
 from confluent_kafka.schema_registry.json_schema import JSONDeserializer
 from confluent_kafka.schema_registry.protobuf import ProtobufDeserializer
 from google.protobuf.json_format import MessageToDict
+
 
 class Deserializer:
     def deserialize(self, payload_bytes, type_str):
@@ -24,7 +25,9 @@ class Deserializer:
         elif type_str.lower() in ["jsonschema", "json_sr"]:
             deserialized_payload = self.bytes_jsonschema_to_dict(payload_bytes)
         else:
-            raise Exception("Only \"str\", \"bytes\", \"json\", \"protobuf\" (\"pb\"), \"avro\" and \"jsonschema\" (\"json_sr\") supported.")
+            raise Exception(
+                'Only "str", "bytes", "json", "protobuf" ("pb"), "avro" and "jsonschema" ("json_sr") supported.'
+            )
         #
         return deserialized_payload
 
@@ -48,13 +51,31 @@ class Deserializer:
             return None
         #
         schema_id_int = int.from_bytes(bytes[1:5], "big")
-        if schema_id_int in self.schema_id_int_generalizedProtocolMessageType_protobuf_schema_str_tuple_dict:
-            generalizedProtocolMessageType, protobuf_schema_str = self.schema_id_int_generalizedProtocolMessageType_protobuf_schema_str_tuple_dict[schema_id_int]
+        if (
+            schema_id_int
+            in self.schema_id_int_generalizedProtocolMessageType_protobuf_schema_str_tuple_dict
+        ):
+            generalizedProtocolMessageType, protobuf_schema_str = (
+                self.schema_id_int_generalizedProtocolMessageType_protobuf_schema_str_tuple_dict[
+                    schema_id_int
+                ]
+            )
         else:
-            generalizedProtocolMessageType, protobuf_schema_str = self.schema_id_int_to_generalizedProtocolMessageType_protobuf_schema_str_tuple(schema_id_int)
-            self.schema_id_int_generalizedProtocolMessageType_protobuf_schema_str_tuple_dict[schema_id_int] = (generalizedProtocolMessageType, protobuf_schema_str)
+            generalizedProtocolMessageType, protobuf_schema_str = (
+                self.schema_id_int_to_generalizedProtocolMessageType_protobuf_schema_str_tuple(
+                    schema_id_int
+                )
+            )
+            self.schema_id_int_generalizedProtocolMessageType_protobuf_schema_str_tuple_dict[
+                schema_id_int
+            ] = (
+                generalizedProtocolMessageType,
+                protobuf_schema_str,
+            )
         #
-        protobufDeserializer = ProtobufDeserializer(generalizedProtocolMessageType, {"use.deprecated.format": False})
+        protobufDeserializer = ProtobufDeserializer(
+            generalizedProtocolMessageType, {"use.deprecated.format": False}
+        )
         protobuf_message = protobufDeserializer(bytes, None)
         dict = MessageToDict(protobuf_message)
         return dict
@@ -67,7 +88,9 @@ class Deserializer:
         schema_dict = self.sr.get_schema(schema_id_int)
         schema_str = schema_dict["schema_str"]
         #
-        avroDeserializer = AvroDeserializer(self.sr.schemaRegistryClient, schema_str)
+        avroDeserializer = AvroDeserializer(
+            self.sr.schemaRegistryClient, schema_str
+        )
         dict = avroDeserializer(bytes, None)
         return dict
 
@@ -85,15 +108,21 @@ class Deserializer:
 
     # Helpers
 
-    def schema_id_int_to_generalizedProtocolMessageType_protobuf_schema_str_tuple(self, schema_id_int):
+    def schema_id_int_to_generalizedProtocolMessageType_protobuf_schema_str_tuple(
+        self, schema_id_int
+    ):
         schema_dict = self.sr.get_schema(schema_id_int)
         schema_str = schema_dict["schema_str"]
         #
-        generalizedProtocolMessageType = self.schema_id_int_and_schema_str_to_generalizedProtocolMessageType(schema_id_int, schema_str)
+        generalizedProtocolMessageType = self.schema_id_int_and_schema_str_to_generalizedProtocolMessageType(
+            schema_id_int, schema_str
+        )
         #
         return generalizedProtocolMessageType, schema_str
 
-    def schema_id_int_and_schema_str_to_generalizedProtocolMessageType(self, schema_id_int, schema_str):
+    def schema_id_int_and_schema_str_to_generalizedProtocolMessageType(
+        self, schema_id_int, schema_str
+    ):
         path_str = f"/{tempfile.gettempdir()}/kafi/clusters/{self.storage_obj.config_str}"
         os.makedirs(path_str, exist_ok=True)
         file_str = f"schema_{schema_id_int}.proto"
@@ -102,10 +131,22 @@ class Deserializer:
             textIOWrapper.write(schema_str)
         #
         import grpc_tools.protoc
-        grpc_tools.protoc.main(["protoc", f"-I{path_str}", f"--python_out={path_str}", f"{file_str}"])
+
+        grpc_tools.protoc.main(
+            [
+                "protoc",
+                f"-I{path_str}",
+                f"--python_out={path_str}",
+                f"{file_str}",
+            ]
+        )
         #
         sys.path.insert(1, path_str)
         schema_module = importlib.import_module(f"schema_{schema_id_int}_pb2")
-        schema_name_str = list(schema_module.DESCRIPTOR.message_types_by_name.keys())[0]
-        generalizedProtocolMessageType = getattr(schema_module, schema_name_str)
+        schema_name_str = list(
+            schema_module.DESCRIPTOR.message_types_by_name.keys()
+        )[0]
+        generalizedProtocolMessageType = getattr(
+            schema_module, schema_name_str
+        )
         return generalizedProtocolMessageType

@@ -6,6 +6,7 @@ ALL_MESSAGES = -1
 
 #
 
+
 class AddOns(Functional):
     def compact(self, topic, n=ALL_MESSAGES, **kwargs):
         def foldl_function(acc, message_dict):
@@ -23,22 +24,31 @@ class AddOns(Functional):
                     key_hash_int_message_dict_dict[key_hash_int] = message_dict
             #
             return key_hash_int_message_dict_dict
+
         #
 
-        (key_hash_int_message_dict_dict, _) = self.foldl(topic, foldl_function, {}, n, **kwargs)
+        (key_hash_int_message_dict_dict, _) = self.foldl(
+            topic, foldl_function, {}, n, **kwargs
+        )
         #
         message_dict_list = list(key_hash_int_message_dict_dict.values())
         #
         return message_dict_list
 
-    def compact_to(self, topic, target_storage, target_topic, n=ALL_MESSAGES, **kwargs):
+    def compact_to(
+        self, topic, target_storage, target_topic, n=ALL_MESSAGES, **kwargs
+    ):
         source_kwargs = self.get_source_kwargs(**kwargs)
         target_kwargs = self.get_target_kwargs(**kwargs)
         #
         message_dict_list = self.compact(topic, n, **source_kwargs)
         #
-        target_producer = target_storage.producer(target_topic, **target_kwargs)
-        key_bytes_list_value_bytes_list_tuple = target_producer.produce_list(message_dict_list, **target_kwargs)
+        target_producer = target_storage.producer(
+            target_topic, **target_kwargs
+        )
+        key_bytes_list_value_bytes_list_tuple = target_producer.produce_list(
+            message_dict_list, **target_kwargs
+        )
         target_producer.close()
         #
         return key_bytes_list_value_bytes_list_tuple
@@ -64,14 +74,21 @@ class AddOns(Functional):
             #
             self.delete(topic_str)
             #
-            self.create(topic_str, partitions=partitions_int, config=config_dict, **kwargs)
+            self.create(
+                topic_str,
+                partitions=partitions_int,
+                config=config_dict,
+                **kwargs
+            )
         else:
             if partitions is None:
                 partitions_int = 1
             else:
                 partitions_int = partitions
             #
-            self.create(topic_str, partitions=partitions_int, config=config, **kwargs)
+            self.create(
+                topic_str, partitions=partitions_int, config=config, **kwargs
+            )
         #
         return topic_str
 

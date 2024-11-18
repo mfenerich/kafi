@@ -56,7 +56,7 @@ kafka:
   sasl.mechanisms: PLAIN
   sasl.username: ${KAFI_KAFKA_USERNAME}
   sasl.password: ${KAFI_KAFKA_PASSWORD}
-  
+
 schema_registry:
   schema.registry.url: ${KAFI_SCHEMA_REGISTRY_URL}
   basic.auth.credentials.source: USER_INFO

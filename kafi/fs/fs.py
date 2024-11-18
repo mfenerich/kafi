@@ -1,11 +1,23 @@
-from kafi.storage import Storage
 from kafi.files import Files
+from kafi.storage import Storage
 
 #
 
+
 class FS(Storage, Files):
-    def __init__(self, config_dir_str, config_name_str, mandatory_section_str_list, optional_section_str_list):
-        super().__init__(config_dir_str, config_name_str, mandatory_section_str_list, optional_section_str_list)
+    def __init__(
+        self,
+        config_dir_str,
+        config_name_str,
+        mandatory_section_str_list,
+        optional_section_str_list,
+    ):
+        super().__init__(
+            config_dir_str,
+            config_name_str,
+            mandatory_section_str_list,
+            optional_section_str_list,
+        )
         #
         self.config_dir_str = config_dir_str
         self.config_name_str = config_name_str
@@ -31,7 +43,9 @@ class FS(Storage, Files):
             if "container.name" not in self.azure_blob_config_dict:
                 self.container_name("test")
             else:
-                self.container_name(str(self.azure_blob_config_dict["container.name"]))
+                self.container_name(
+                    str(self.azure_blob_config_dict["container.name"])
+                )
         else:
             self.azure_blob_config_dict = None
         # s3
@@ -54,15 +68,21 @@ class FS(Storage, Files):
 
     # azure_blob
 
-    def container_name(self, new_value=None): # str
-        return self.get_set_config("container.name", new_value, dict=self.azure_blob_config_dict)
+    def container_name(self, new_value=None):  # str
+        return self.get_set_config(
+            "container.name", new_value, dict=self.azure_blob_config_dict
+        )
 
     # local
-    
-    def root_dir(self, new_value=None): # str
-        return self.get_set_config("root.dir", new_value, dict=self.local_config_dict)
+
+    def root_dir(self, new_value=None):  # str
+        return self.get_set_config(
+            "root.dir", new_value, dict=self.local_config_dict
+        )
 
     # s3
-    
-    def bucket_name(self, new_value=None): # str
-        return self.get_set_config("bucket.name", new_value, dict=self.s3_config_dict)
+
+    def bucket_name(self, new_value=None):  # str
+        return self.get_set_config(
+            "bucket.name", new_value, dict=self.s3_config_dict
+        )

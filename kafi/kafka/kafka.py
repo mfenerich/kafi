@@ -6,9 +6,21 @@ ALL_MESSAGES = -1
 
 #
 
+
 class Kafka(Storage):
-    def __init__(self, config_dir_str, config_name_str, mandatory_section_str_list, optional_section_str_list):
-        super().__init__(config_dir_str, config_name_str, mandatory_section_str_list, optional_section_str_list)
+    def __init__(
+        self,
+        config_dir_str,
+        config_name_str,
+        mandatory_section_str_list,
+        optional_section_str_list,
+    ):
+        super().__init__(
+            config_dir_str,
+            config_name_str,
+            mandatory_section_str_list,
+            optional_section_str_list,
+        )
         #
         self.config_dir_str = config_dir_str
         self.config_name_str = config_name_str
@@ -30,7 +42,9 @@ class Kafka(Storage):
         if "flush.num.messages" not in self.kafi_config_dict:
             self.flush_num_messages(10000)
         else:
-            self.flush_num_messages(int(self.kafi_config_dict["flush.num.messages"]))
+            self.flush_num_messages(
+                int(self.kafi_config_dict["flush.num.messages"])
+            )
         #
         if "flush.timeout" not in self.kafi_config_dict:
             self.flush_timeout(-1.0)
@@ -45,22 +59,30 @@ class Kafka(Storage):
         if "consume.timeout" not in self.kafi_config_dict:
             self.consume_timeout(5.0)
         else:
-            self.consume_timeout(float(self.kafi_config_dict["consume.timeout"]))
+            self.consume_timeout(
+                float(self.kafi_config_dict["consume.timeout"])
+            )
         #
         if "enable.auto.commit" not in self.kafi_config_dict:
             self.enable_auto_commit(True)
         else:
-            self.enable_auto_commit(bool(self.kafi_config_dict["enable.auto.commit"]))
+            self.enable_auto_commit(
+                bool(self.kafi_config_dict["enable.auto.commit"])
+            )
         #
         if "session.timeout.ms" not in self.kafi_config_dict:
             self.session_timeout_ms(45000)
         else:
-            self.session_timeout_ms(int(self.kafi_config_dict["session.timeout.ms"]))
+            self.session_timeout_ms(
+                int(self.kafi_config_dict["session.timeout.ms"])
+            )
         #
         if "block.num.retries" not in self.kafi_config_dict:
             self.block_num_retries(10)
         else:
-            self.block_num_retries(int(self.kafi_config_dict["block.num.retries"]))
+            self.block_num_retries(
+                int(self.kafi_config_dict["block.num.retries"])
+            )
         #
         if "block.interval" not in self.kafi_config_dict:
             self.block_interval(0.5)
@@ -77,73 +99,130 @@ class Kafka(Storage):
         if "consumer.request.timeout.ms" not in self.kafi_config_dict:
             self.consumer_request_timeout_ms(1000)
         else:
-            self.consumer_request_timeout_ms(int(self.kafi_config_dict["consumer.request.timeout.ms"]))
+            self.consumer_request_timeout_ms(
+                int(self.kafi_config_dict["consumer.request.timeout.ms"])
+            )
         #
         if "consume.num.attempts" not in self.kafi_config_dict:
             self.consume_num_attempts(3)
         else:
-            self.consume_num_attempts(int(self.kafi_config_dict["consume.num.attempts"]))
+            self.consume_num_attempts(
+                int(self.kafi_config_dict["consume.num.attempts"])
+            )
         #
         if "requests.num.retries" not in self.kafi_config_dict:
             self.requests_num_retries(10)
         else:
-            self.requests_num_retries(int(self.kafi_config_dict["requests.num.retries"]))
+            self.requests_num_retries(
+                int(self.kafi_config_dict["requests.num.retries"])
+            )
 
     #
 
-    def flush_num_messages(self, new_value=None): # int
+    def flush_num_messages(self, new_value=None):  # int
         return self.get_set_config("flush.num.messages", new_value)
 
-    def flush_timeout(self, new_value=None): # float
+    def flush_timeout(self, new_value=None):  # float
         return self.get_set_config("flush.timeout", new_value)
 
-    def retention_ms(self, new_value=None): # int
+    def retention_ms(self, new_value=None):  # int
         return self.get_set_config("retention.ms", new_value)
 
-    def consume_timeout(self, new_value=None): # float
+    def consume_timeout(self, new_value=None):  # float
         return self.get_set_config("consume.timeout", new_value)
 
-    def enable_auto_commit(self, new_value=None): # bool
+    def enable_auto_commit(self, new_value=None):  # bool
         return self.get_set_config("enable.auto.commit", new_value)
 
-    def session_timeout_ms(self, new_value=None): # int
+    def session_timeout_ms(self, new_value=None):  # int
         return self.get_set_config("session.timeout.ms", new_value)
 
-    def block_num_retries(self, new_value=None): # int
+    def block_num_retries(self, new_value=None):  # int
         return self.get_set_config("block.num.retries", new_value)
 
-    def block_interval(self, new_value=None): # float
+    def block_interval(self, new_value=None):  # float
         return self.get_set_config("block.interval", new_value)
 
     #
 
-    def fetch_min_bytes(self, new_value=None): # int
+    def fetch_min_bytes(self, new_value=None):  # int
         return self.get_set_config("fetch.min.bytes", new_value)
 
-    def consumer_request_timeout_ms(self, new_value=None): # int
+    def consumer_request_timeout_ms(self, new_value=None):  # int
         return self.get_set_config("consumer.request.timeout.ms", new_value)
 
-    def consume_num_attempts(self, new_value=None): # int
+    def consume_num_attempts(self, new_value=None):  # int
         return self.get_set_config("consume.num.attempts", new_value)
 
-    def requests_num_retries(self, new_value=None): # int
+    def requests_num_retries(self, new_value=None):  # int
         return self.get_set_config("requests.num.retries", new_value)
 
     # Brokers
 
     def brokers(self, pattern=None):
         return self.admin.brokers(pattern)
-    
+
     def broker_config(self, pattern=None, config=None, **kwargs):
         return self.admin.broker_config(pattern, config, **kwargs)
-    
+
     # ACLs
 
-    def acls(self, restype="any", name=None, resource_pattern_type="any", principal=None, host=None, operation="any", permission_type="any"):
-        return self.admin.acls(restype, name, resource_pattern_type, principal, host, operation, permission_type)
+    def acls(
+        self,
+        restype="any",
+        name=None,
+        resource_pattern_type="any",
+        principal=None,
+        host=None,
+        operation="any",
+        permission_type="any",
+    ):
+        return self.admin.acls(
+            restype,
+            name,
+            resource_pattern_type,
+            principal,
+            host,
+            operation,
+            permission_type,
+        )
 
-    def create_acl(self, restype="any", name=None, resource_pattern_type="any", principal=None, host=None, operation="any", permission_type="any"):
-        return self.admin.create_acl(restype, name, resource_pattern_type, principal, host, operation, permission_type)
-    
-    def delete_acl(self, restype="any", name=None, resource_pattern_type="any", principal=None, host=None, operation="any", permission_type="any"):
-        return self.admin.delete_acl(restype, name, resource_pattern_type, principal, host, operation, permission_type)
+    def create_acl(
+        self,
+        restype="any",
+        name=None,
+        resource_pattern_type="any",
+        principal=None,
+        host=None,
+        operation="any",
+        permission_type="any",
+    ):
+        return self.admin.create_acl(
+            restype,
+            name,
+            resource_pattern_type,
+            principal,
+            host,
+            operation,
+            permission_type,
+        )
+
+    def delete_acl(
+        self,
+        restype="any",
+        name=None,
+        resource_pattern_type="any",
+        principal=None,
+        host=None,
+        operation="any",
+        permission_type="any",
+    ):
+        return self.admin.delete_acl(
+            restype,
+            name,
+            resource_pattern_type,
+            principal,
+            host,
+            operation,
+            permission_type,
+        )

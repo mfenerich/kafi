@@ -1,31 +1,36 @@
 import base64
 import binascii
 import datetime
-import dateutil.parser
+import json
+import sys
+import time
 from fnmatch import fnmatch
 from functools import reduce
-import json
+
+import dateutil.parser
+
 # import logging
 import pandas as pd
 import requests
 from requests.adapters import HTTPAdapter, Retry
-import sys
-import time
+
 
 def get_millis():
-    return int(time.time()*1000)
+    return int(time.time() * 1000)
 
 
 def to_millis(timestamp_str):
-    return int(dateutil.parser.isoparse(timestamp_str).timestamp()*1000)
+    return int(dateutil.parser.isoparse(timestamp_str).timestamp() * 1000)
 
 
 def from_millis(millis_int):
-    return datetime.datetime.fromtimestamp(millis_int/1000.0).isoformat(sep=" ")
+    return datetime.datetime.fromtimestamp(millis_int / 1000.0).isoformat(
+        sep=" "
+    )
 
 
 def is_interactive():
-    return hasattr(sys, 'ps1')
+    return hasattr(sys, "ps1")
 
 
 def pretty(dict):
@@ -35,25 +40,41 @@ def pretty(dict):
 def ppretty(dict):
     print(pretty(dict))
 
+
 #
+
 
 def create_session(retries_int):
     # logging.basicConfig(level=logging.DEBUG)
     session = requests.Session()
-    retry = Retry(total=retries_int, backoff_factor=1, status_forcelist=[500, 502, 503, 504], allowed_methods=None)
+    retry = Retry(
+        total=retries_int,
+        backoff_factor=1,
+        status_forcelist=[500, 502, 503, 504],
+        allowed_methods=None,
+    )
     adapter = HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
     #
     return session
 
 
-def get(url_str, headers_dict, payload_dict=None, auth_str_tuple=None, retries=0):
+def get(
+    url_str, headers_dict, payload_dict=None, auth_str_tuple=None, retries=0
+):
     session = create_session(retries)
     if payload_dict is None:
-        response = session.get(url_str, headers=headers_dict, auth=auth_str_tuple)
+        response = session.get(
+            url_str, headers=headers_dict, auth=auth_str_tuple
+        )
     else:
-        response = session.get(url_str, headers=headers_dict, json=payload_dict, auth=auth_str_tuple)
+        response = session.get(
+            url_str,
+            headers=headers_dict,
+            json=payload_dict,
+            auth=auth_str_tuple,
+        )
     #
     if is_json(response.text):
         response_dict = response.json()
@@ -72,7 +93,9 @@ def get(url_str, headers_dict, payload_dict=None, auth_str_tuple=None, retries=0
 
 def delete(url_str, headers_dict, auth_str_tuple=None, retries=10):
     session = create_session(retries)
-    response = session.delete(url_str, headers=headers_dict, auth=auth_str_tuple)
+    response = session.delete(
+        url_str, headers=headers_dict, auth=auth_str_tuple
+    )
     if is_json(response.text):
         response_dict = response.json()
     else:
@@ -88,18 +111,37 @@ def delete(url_str, headers_dict, auth_str_tuple=None, retries=10):
         raise Exception(response_dict)
 
 
-def post(url_str, headers_dict, payload_dict_or_generator, auth_str_tuple=None, retries=10):
+def post(
+    url_str,
+    headers_dict,
+    payload_dict_or_generator,
+    auth_str_tuple=None,
+    retries=10,
+):
     session = create_session(retries)
     if isinstance(payload_dict_or_generator, dict):
-        response = session.post(url_str, headers=headers_dict, json=payload_dict_or_generator, auth=auth_str_tuple)
+        response = session.post(
+            url_str,
+            headers=headers_dict,
+            json=payload_dict_or_generator,
+            auth=auth_str_tuple,
+        )
     else:
-        response = session.post(url_str, headers=headers_dict, data=payload_dict_or_generator, auth=auth_str_tuple)
+        response = session.post(
+            url_str,
+            headers=headers_dict,
+            data=payload_dict_or_generator,
+            auth=auth_str_tuple,
+        )
     #
     if is_json(response.text):
         response_dict = response.json()
         #
         if isinstance(response_dict, dict):
-            if "error_code" in response_dict and response_dict["error_code"] > 400:
+            if (
+                "error_code" in response_dict
+                and response_dict["error_code"] > 400
+            ):
                 raise Exception(response_dict["message"])
             #
         if response.ok:
@@ -107,12 +149,17 @@ def post(url_str, headers_dict, payload_dict_or_generator, auth_str_tuple=None, 
         else:
             raise Exception(response_dict)
     else:
-        response_text_list = "[" + response.text[:-2].replace("\r\n", ",") + "]"
+        response_text_list = (
+            "[" + response.text[:-2].replace("\r\n", ",") + "]"
+        )
         response_dict_list = json.loads(response_text_list)
         #
         for response_dict in response_dict_list:
             if isinstance(response_dict, dict):
-                if "error_code" in response_dict and response_dict["error_code"] > 400:
+                if (
+                    "error_code" in response_dict
+                    and response_dict["error_code"] > 400
+                ):
                     raise Exception(response_dict["message"])
         #
         if response.ok:
@@ -139,7 +186,12 @@ def is_json(str):
 
 
 def is_pattern(str):
-    return "*" in str or "?" in str or ("[" in str and "]" in str) or ("[!" in str and "]" in str)
+    return (
+        "*" in str
+        or "?" in str
+        or ("[" in str and "]" in str)
+        or ("[!" in str and "]" in str)
+    )
 
 
 def is_base64_encoded(str_or_bytes_or_dict):
@@ -147,9 +199,16 @@ def is_base64_encoded(str_or_bytes_or_dict):
         if isinstance(str_or_bytes_or_dict, bytes):
             decoded_bytes = base64.b64decode(str_or_bytes_or_dict)
         elif isinstance(str_or_bytes_or_dict, str):
-            decoded_bytes = base64.b64decode(bytes(str_or_bytes_or_dict, encoding="utf-8"))
+            decoded_bytes = base64.b64decode(
+                bytes(str_or_bytes_or_dict, encoding="utf-8")
+            )
         elif isinstance(str_or_bytes_or_dict, dict):
-            decoded_bytes = base64.b64decode(bytes(json.dumps(str_or_bytes_or_dict, default=str), encoding="utf-8"))
+            decoded_bytes = base64.b64decode(
+                bytes(
+                    json.dumps(str_or_bytes_or_dict, default=str),
+                    encoding="utf-8",
+                )
+            )
         else:
             return False
         encoded_bytes = base64.b64encode(decoded_bytes)
@@ -162,9 +221,15 @@ def base64_encode(str_or_bytes_or_dict):
     if isinstance(str_or_bytes_or_dict, bytes):
         encoded_bytes = base64.b64encode(str_or_bytes_or_dict)
     elif isinstance(str_or_bytes_or_dict, str):
-        encoded_bytes = base64.b64encode(bytes(str_or_bytes_or_dict, encoding="utf-8"))
+        encoded_bytes = base64.b64encode(
+            bytes(str_or_bytes_or_dict, encoding="utf-8")
+        )
     elif isinstance(str_or_bytes_or_dict, dict):
-        encoded_bytes = base64.b64encode(bytes(json.dumps(str_or_bytes_or_dict, default=str), encoding="utf-8"))
+        encoded_bytes = base64.b64encode(
+            bytes(
+                json.dumps(str_or_bytes_or_dict, default=str), encoding="utf-8"
+            )
+        )
     return encoded_bytes
 
 
@@ -228,7 +293,14 @@ def pattern_match(input_str_list, pattern_str_or_str_list):
     if pattern_str_or_str_list is not None:
         if isinstance(pattern_str_or_str_list, str):
             pattern_str_or_str_list = [pattern_str_or_str_list]
-        output_topic_str_list = [input_str for input_str in input_str_list if any(fnmatch(input_str, pattern_str) for pattern_str in pattern_str_or_str_list)]
+        output_topic_str_list = [
+            input_str
+            for input_str in input_str_list
+            if any(
+                fnmatch(input_str, pattern_str)
+                for pattern_str in pattern_str_or_str_list
+            )
+        ]
     else:
         output_topic_str_list = input_str_list
     #
@@ -245,12 +317,28 @@ def explode_normalize(df):
             df = explode(df, col_str)
         elif isinstance(df.iloc[0][col_str], object):
             df_child = pd.json_normalize(df[col_str])
-            df_child.columns = [f'{col_str}.{child_col_str}' for child_col_str in df_child.columns]
-            df = pd.concat([df.loc[:, ~df.columns.isin([col_str])].reset_index(drop=True), df_child], axis=1)
+            df_child.columns = [
+                f"{col_str}.{child_col_str}"
+                for child_col_str in df_child.columns
+            ]
+            df = pd.concat(
+                [
+                    df.loc[:, ~df.columns.isin([col_str])].reset_index(
+                        drop=True
+                    ),
+                    df_child,
+                ],
+                axis=1,
+            )
         #
         return df
+
     #
-    col_str_list = [col_str for col_str in df.columns if isinstance(df.iloc[0][col_str], list)]
+    col_str_list = [
+        col_str
+        for col_str in df.columns
+        if isinstance(df.iloc[0][col_str], list)
+    ]
     if len(col_str_list) < 1:
         return df
     #
