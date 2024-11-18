@@ -1,5 +1,6 @@
 local:
-  root.dir: /tmp
+  bootstrap.servers: broker:9092
+
 
 schema_registry:
   schema.registry.url: http://localhost:8081

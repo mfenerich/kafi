@@ -1,5 +1,4 @@
 services:
-
   broker:
     image: confluentinc/cp-kafka:7.7.1
     hostname: broker
@@ -10,7 +9,7 @@ services:
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker:29092,PLAINTEXT_HOST://broker:9092'
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -24,6 +23,13 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_LOG_CLEANER_ENABLE: 'true'
+      KAFKA_LOG_SEGMENT_BYTES: '1024'
+      KAFKA_LOG_RETENTION_MS: '60000'
+      KAFKA_LOG_CLEANER_BACKOFF_MS: '1000'
+      KAFKA_LOG_CLEANER_MAX_COMPACTION_LAG_MS: '1000'
+      KAFKA_LOG_CLEANER_DELETE_RETENTION_MS: '1000'
+      KAFKA_LOG_ROLL_MS: '1000'
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.7.1
@@ -58,11 +64,10 @@ services:
       context: ..
       dockerfile: Dockerfile
     container_name: app
-    # depends_on:
-    #   rest-proxy:
-    #      condition: service_healthy
+    depends_on:
+      - rest-proxy
     environment:
-      KAFKA_BROKER: kafka:9092
+      KAFKA_BROKER: broker:9092
       SCHEMA_REGISTRY_URL: http://schema-registry:8081
       KAFKA_REST_URL: http://rest-proxy:8082
     volumes:
