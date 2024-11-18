@@ -1,8 +1,8 @@
 kafka:
-  bootstrap.servers: localhost:9092
+  bootstrap.servers: broker:9092
 
 schema_registry:
-  schema.registry.url: http://localhost:8081
+  schema.registry.url: http://schema-registry:8081
 
 kafi:
   flush.num.messages: 10000

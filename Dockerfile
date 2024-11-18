@@ -15,5 +15,5 @@ COPY .devcontainer/wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
 # Set entrypoint and command
-ENTRYPOINT ["/wait-for-it.sh", "kafka:9092", "--strict", "--"]
+ENTRYPOINT ["/wait-for-it.sh", "broker:9092", "--strict", "--"]
 CMD exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
