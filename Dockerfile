@@ -16,4 +16,4 @@ RUN chmod +x /wait-for-it.sh
 
 # Set entrypoint and command
 ENTRYPOINT ["/wait-for-it.sh", "kafka:9092", "--strict", "--"]
-CMD ["bash"]
+CMD exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
