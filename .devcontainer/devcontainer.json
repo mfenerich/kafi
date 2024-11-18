@@ -7,6 +7,6 @@
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
-  "postCreateCommand": "pip install -e .[dev]",
+  "postCreateCommand": "pip install -e .[dev] --no-cache-dir --no-deps --use-feature=fast-deps",
   "remoteUser": "root"
 }
