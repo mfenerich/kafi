@@ -12,6 +12,6 @@
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
-  "postCreateCommand": "",
+  "postCreateCommand": "pip install -e .[dev]",
   "remoteUser": "root"
 }
