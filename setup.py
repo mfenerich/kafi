@@ -39,6 +39,7 @@ setup(
             "black",
             "isort",
             "flake8",
+            "coverage",
         ],
     },
     classifiers=[
