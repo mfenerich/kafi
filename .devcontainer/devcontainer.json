@@ -2,7 +2,7 @@
   "name": "kafi-dev",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
-  "workspaceFolder": "/app",
+  "workspaceFolder": "/workspaces/kafi",
   "forwardPorts": [9092, 2181],
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
