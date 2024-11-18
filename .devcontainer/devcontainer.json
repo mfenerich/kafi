@@ -1,0 +1,12 @@
+{
+  "name": "kafi-dev",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/app",
+  "forwardPorts": [9092, 2181],
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "postCreateCommand": "pip install -e .[dev]",
+  "remoteUser": "root"
+}
