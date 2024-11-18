@@ -5,7 +5,7 @@
   "workspaceFolder": "/workspaces/kafi",
   "forwardPorts": [9092, 2181],
   "hostRequirements": {
-    "cpus": 8,
+    "cpus": 4,
     "memory": "16gb",
     "storage": "32gb"
   },
