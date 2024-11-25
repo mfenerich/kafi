@@ -6,9 +6,9 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
 setup(
-    name="kafi",
-    version="0.0.24",
-    description="Kafka and Files",
+    name='kafi',
+    version='0.0.25',
+    description='Kafka and Files',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/xdgrulez/kafi",
