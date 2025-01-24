@@ -12,5 +12,5 @@
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
-  "postCreateCommand": "pip install -e .[dev]"
+  "postCreateCommand": "pip install -e .[dev] && python -m ipykernel install --user --name=kafi-dev"
 }
