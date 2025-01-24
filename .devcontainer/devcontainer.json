@@ -2,11 +2,11 @@
   "name": "kafi-dev",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
-  "workspaceFolder": "/workspaces/kafi",
+  "workspaceFolder": "/app",
   "forwardPorts": [9092, 2181],
   "hostRequirements": {
     "cpus": 4,
-    "memory": "16gb",
+    "memory": "8gb",
     "storage": "32gb"
   },
   "features": {

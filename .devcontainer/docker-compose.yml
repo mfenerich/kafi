@@ -71,4 +71,4 @@ services:
       SCHEMA_REGISTRY_URL: http://schema-registry:8081
       KAFKA_REST_URL: http://rest-proxy:8082
     volumes:
-      - ./app:/app
+      - ../:/app
